@@ -1,0 +1,16 @@
+[
+{
+  "modid": "veinminermodintegration",
+  "name": "Veinminer Mod Integration",
+  "description": "Several integration options for Veinminer",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Portablejim"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": ["VeinMiner"]
+}
+]
