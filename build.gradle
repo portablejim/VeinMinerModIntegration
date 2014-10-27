@@ -22,7 +22,7 @@ group= "portablejim.veinminer.modintegration" // http://maven.apache.org/guides/
 archivesBaseName = "veinminermodintegration"
 
 minecraft {
-    version = "1.7.10-10.13.0.1180"
+    version = "1.7.10-10.13.2.1232"
     assetDir = "eclipse/assets"
 }
 
@@ -31,7 +31,7 @@ String buildNumber = "unknown"
 if(System.getenv("BUILD_NUMBER") != null) {
     buildNumber = System.getenv("BUILD_NUMBER")
 }
-version = "${config.minecraft_version}_${config.mod_version}.${buildNumber}"
+version = "${version}.${buildNumber}"
 
 processResources
 {
