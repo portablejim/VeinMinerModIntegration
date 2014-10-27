@@ -1,14 +1,12 @@
 package portablejim.veinminermodintegration;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.item.ItemStack;
 
 /**
- * Created with IntelliJ IDEA.
- * User: james
- * Date: 12/07/14
- * Time: 3:04 PM
- * To change this template use File | Settings | File Templates.
+ * The actual enchantment.
  */
 public class VeinMinerEnchant extends Enchantment {
     protected VeinMinerEnchant(int enchantId, int weight) {
@@ -32,5 +30,11 @@ public class VeinMinerEnchant extends Enchantment {
     public int getMaxEnchantability(int p_77317_1_)
     {
         return this.getMinEnchantability(p_77317_1_) + 50;
+    }
+
+    public boolean canApply(ItemStack itemStack)
+    {
+        GameRegistry.UniqueIdentifier itemUid = GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
+        return !ModIntegration.blacklist.contains(itemUid.toString()) && super.canApply(itemStack);
     }
 }

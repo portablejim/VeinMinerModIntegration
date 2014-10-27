@@ -1,5 +1,7 @@
 package portablejim.veinminermodintegration;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -12,7 +14,10 @@ import net.minecraftforge.common.config.Configuration;
 import portablejim.veinminer.api.Permission;
 import portablejim.veinminer.api.VeinminerInitalToolCheck;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Mod(modid = ModIntegration.MODID, version = ModIntegration.VERSION, guiFactory = "portablejim.veinminermodintegration.VeinminerModIntegrationGuiFactory")
 public class ModIntegration
@@ -23,6 +28,7 @@ public class ModIntegration
     public static Configuration configFile;
 
     public static int enchantmentId = 180;
+    public static Set<String> blacklist = new HashSet<String>();
 
     public VeinMinerEnchant veinMinerEnchant;
 
@@ -34,20 +40,33 @@ public class ModIntegration
             veinMinerEnchant = new VeinMinerEnchant(enchantmentId, 3);
     }
     
+    @SuppressWarnings("UnusedParameters")
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static void syncConfig() {
         enchantmentId = configFile.getInt("Enchantment ID", Configuration.CATEGORY_GENERAL, enchantmentId, 0, 255, "Veinminer Enchantment ID");
+        String blacklistString = configFile.getString("Enchantment blacklist", Configuration.CATEGORY_GENERAL, "", "Items to blacklist from the Veinminer enchant.\nSplit with ','.");
+        blacklist = new HashSet<String>(Arrays.asList(blacklistString.split(",")));
 
         if(configFile.hasChanged()) {
             configFile.save();
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+        if(eventArgs.modID.equals(MODID)) {
+            syncConfig();
+        }
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
     @SubscribeEvent
     public void checkEnchantment(VeinminerInitalToolCheck event) {
         boolean allow = false;
