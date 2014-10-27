@@ -26,21 +26,12 @@ minecraft {
     assetDir = "eclipse/assets"
 }
 
-dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
 
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+String buildNumber = "unknown"
+if(System.getenv("BUILD_NUMBER") != null) {
+    buildNumber = System.getenv("BUILD_NUMBER")
 }
+version = "${config.minecraft_version}_${config.mod_version}.${buildNumber}"
 
 processResources
 {
@@ -59,5 +50,37 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+build.dependsOn deobfJar
+artifacts {
+    archives deobfJar
+}
+configurations {
+    deployerJars
+}
+uploadArchives {
+    dependsOn 'reobf'
+    repositories {
+        if(project.hasProperty("pushMaven")) {
+            logger.info("Pushing to maven repo")
+            mavenDeployer {
+                configuration = configurations.deployerJars
+                repository(url: "file://localhost/home/public_html/maven.jamesmckay.id.au/htdocs/")
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+                    packaging = 'jar'
+                    description 'Additional Resources Mod'
+                }
+            }
+        }
     }
 }
