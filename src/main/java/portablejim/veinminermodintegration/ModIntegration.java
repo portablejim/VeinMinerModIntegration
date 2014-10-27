@@ -23,7 +23,7 @@ import java.util.Set;
 public class ModIntegration
 {
     public static final String MODID = "veinminermodintegration";
-    public static final String VERSION = "1.7.10-0.1";
+    public static final String VERSION = "1.7.10-0.2.0";
 
     public static Configuration configFile;
 
