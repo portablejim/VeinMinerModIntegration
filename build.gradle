@@ -22,7 +22,7 @@ group= "portablejim.veinminer.modintegration" // http://maven.apache.org/guides/
 archivesBaseName = "veinminermodintegration"
 
 minecraft {
-    version = "1.7.10-10.13.2.1264"
+    version = "1.7.10-10.13.2.1286"
     assetDir = "eclipse/assets"
 }
 
