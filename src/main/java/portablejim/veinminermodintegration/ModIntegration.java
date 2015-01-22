@@ -2,17 +2,23 @@ package portablejim.veinminermodintegration;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import portablejim.veinminer.api.Permission;
 import portablejim.veinminer.api.VeinminerInitalToolCheck;
+import tconstruct.library.crafting.ModifyBuilder;
+import tconstruct.modifiers.tools.ModInteger;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -48,6 +54,16 @@ public class ModIntegration
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @SuppressWarnings("UnusedParameters")
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent unused) {
+        if(Loader.isModLoaded("TConstruct")) {
+            ItemStack item = new ItemStack(Blocks.cobblestone);
+            ModInteger veinminerMod = new ModInteger(new ItemStack[]{item}, 7, "VeinMiner", 1, "", "VeinMiner");
+            ModifyBuilder.registerModifier(veinminerMod);
+        }
+    }
+
     public static void syncConfig() {
         enchantmentId = configFile.getInt("Enchantment ID", Configuration.CATEGORY_GENERAL, enchantmentId, 0, 255, "Veinminer Enchantment ID");
         String blacklistString = configFile.getString("Enchantment blacklist", Configuration.CATEGORY_GENERAL, "", "Items to blacklist from the Veinminer enchant.\nSplit with ','.");
@@ -78,6 +94,13 @@ public class ModIntegration
         Map<Integer, Integer> enchantments = EnchantmentHelper.getEnchantments(item);
         for(Integer enchantment : enchantments.keySet()) {
             if(enchantment == enchantmentId) {
+                allow = true;
+            }
+        }
+        if(Loader.isModLoaded("TConstruct")) {
+
+            NBTTagCompound tags = item.getTagCompound().getCompoundTag("InfiTool");
+            if (tags.hasKey("VeinMiner")) {
                 allow = true;
             }
         }
