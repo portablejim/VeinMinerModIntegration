@@ -35,6 +35,8 @@ public class ModIntegration
 
     public static int enchantmentId = 180;
     public static Set<String> blacklist = new HashSet<String>();
+    public static boolean enforceEnchantment = true;
+    public static boolean enforceTiconModifier = true;
 
     public VeinMinerEnchant veinMinerEnchant;
 
@@ -67,6 +69,8 @@ public class ModIntegration
     public static void syncConfig() {
         enchantmentId = configFile.getInt("Enchantment ID", Configuration.CATEGORY_GENERAL, enchantmentId, 0, 255, "Veinminer Enchantment ID");
         String blacklistString = configFile.getString("Enchantment blacklist", Configuration.CATEGORY_GENERAL, "", "Items to blacklist from the Veinminer enchant.\nSplit with ','.");
+        enforceEnchantment = configFile.getBoolean("Enchantment", Configuration.CATEGORY_GENERAL, true, "Require the 'VeinMiner' enchantment to veinmine with enchantable items.");
+        enforceTiconModifier = configFile.getBoolean("Tinkers Construct modifier", Configuration.CATEGORY_GENERAL, true, "Require the 'VeinMiner' modifier to veinmine with Tinkers construct tools");
         blacklist = new HashSet<String>(Arrays.asList(blacklistString.split(",")));
 
         if(configFile.hasChanged()) {
@@ -97,11 +101,24 @@ public class ModIntegration
                 allow = true;
             }
         }
+        if(!enforceEnchantment && item.isItemEnchantable()) {
+            allow = true;
+        }
+
         if(Loader.isModLoaded("TConstruct")) {
 
-            NBTTagCompound tags = item.getTagCompound().getCompoundTag("InfiTool");
-            if (tags.hasKey("VeinMiner")) {
-                allow = true;
+            if(item.hasTagCompound()) {
+                NBTTagCompound tags = item.getTagCompound().getCompoundTag("InfiTool");
+                if (tags.hasKey("VeinMiner")) {
+                    allow = true;
+                    int level = tags.getInteger("VeinMiner");
+                    if(level <= 1) {
+                        event.blockLimit = 32;
+                    }
+                }
+                else if(!tags.hasNoTags() && !enforceTiconModifier) {
+                    allow = true;
+                }
             }
         }
 
