@@ -10,7 +10,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,7 +18,6 @@ import net.minecraftforge.common.config.Configuration;
 import portablejim.veinminer.api.Permission;
 import portablejim.veinminer.api.VeinminerInitalToolCheck;
 import tconstruct.library.crafting.ModifyBuilder;
-import tconstruct.modifiers.tools.ModInteger;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -60,8 +59,8 @@ public class ModIntegration
     @EventHandler
     public void postInit(FMLPostInitializationEvent unused) {
         if(Loader.isModLoaded("TConstruct")) {
-            ItemStack item = new ItemStack(Blocks.cobblestone);
-            ModInteger veinminerMod = new ModInteger(new ItemStack[]{item}, 7, "VeinMiner", 1, "", "VeinMiner");
+            ItemStack item = new ItemStack(Items.glowstone_dust);
+            VeinMinerModifer veinminerMod = new VeinMinerModifer(new ItemStack[]{item}, 7, "VeinMiner");
             ModifyBuilder.registerModifier(veinminerMod);
         }
     }
@@ -111,10 +110,9 @@ public class ModIntegration
                 NBTTagCompound tags = item.getTagCompound().getCompoundTag("InfiTool");
                 if (tags.hasKey("VeinMiner")) {
                     allow = true;
-                    int level = tags.getInteger("VeinMiner");
-                    if(level <= 1) {
-                        event.blockLimit = 32;
-                    }
+                    int limit = tags.getInteger("VeinMiner");
+                    limit *= 8;
+                    event.blockLimit = limit;
                 }
                 else if(!tags.hasNoTags() && !enforceTiconModifier) {
                     allow = true;
