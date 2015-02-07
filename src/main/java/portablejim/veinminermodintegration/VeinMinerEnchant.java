@@ -3,6 +3,7 @@ package portablejim.veinminermodintegration;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -34,7 +35,11 @@ public class VeinMinerEnchant extends Enchantment {
 
     public boolean canApply(ItemStack itemStack)
     {
-        GameRegistry.UniqueIdentifier itemUid = GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
-        return !ModIntegration.blacklist.contains(itemUid.toString()) && super.canApply(itemStack);
+        if(itemStack != null && itemStack.getItem() != null &&
+                Item.itemRegistry.getNameForObject(itemStack.getItem()) != null) {
+            GameRegistry.UniqueIdentifier itemUid = GameRegistry.findUniqueIdentifierFor(itemStack.getItem());
+            return !ModIntegration.blacklist.contains(itemUid.toString()) && super.canApply(itemStack);
+        }
+        return false;
     }
 }
