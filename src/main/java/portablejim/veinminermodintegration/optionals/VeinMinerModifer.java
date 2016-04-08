@@ -1,4 +1,4 @@
-package portablejim.veinminermodintegration;
+package portablejim.veinminermodintegration.optionals;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

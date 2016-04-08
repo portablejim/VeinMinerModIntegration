@@ -10,14 +10,13 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import portablejim.veinminer.api.Permission;
 import portablejim.veinminer.api.VeinminerInitalToolCheck;
-import tconstruct.library.crafting.ModifyBuilder;
+import portablejim.veinminermodintegration.optionals.TinkersConstruct;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -59,9 +58,7 @@ public class ModIntegration
     @EventHandler
     public void postInit(FMLPostInitializationEvent unused) {
         if(Loader.isModLoaded("TConstruct")) {
-            ItemStack item = new ItemStack(Items.glowstone_dust);
-            VeinMinerModifer veinminerMod = new VeinMinerModifer(new ItemStack[]{item}, 7, "VeinMiner");
-            ModifyBuilder.registerModifier(veinminerMod);
+            TinkersConstruct.LoadTinkers();
         }
     }
 
